@@ -10,10 +10,9 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMsg(null); // 제출 시 기존 에러 초기화
+    setErrorMsg(null);
 
     const form = e.target as HTMLFormElement;
-
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
     const password = (form.elements.namedItem("password") as HTMLInputElement).value.trim();
     const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
@@ -45,8 +44,7 @@ export default function Page() {
       router.replace("/members/login");
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
-    
-      // 에러 코드(resultCode)가 있으면 조건 처리
+
       switch (error.resultCode) {
         case "400-1":
           userFriendlyMsg = "이메일 형식의 입력이 아닙니다.";
@@ -64,11 +62,10 @@ export default function Page() {
           userFriendlyMsg = "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
           break;
         default:
-          // 서버에서 넘어온 메시지가 있으면 표시
           if (error.msg) userFriendlyMsg = error.msg;
           break;
       }
-    
+
       setErrorMsg(` ${userFriendlyMsg}`);
     }
   };
@@ -78,7 +75,6 @@ export default function Page() {
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">회원가입</h1>
 
-        {/* 에러 메시지 블럭 */}
         {errorMsg && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-400">
             {errorMsg}
@@ -87,55 +83,43 @@ export default function Page() {
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
-            className="text-gray-800 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-gray-800 border border-gray-300 p-3 rounded-lg"
             type="text"
             name="email"
             placeholder="이메일"
             maxLength={50}
           />
           <input
-            className="text-gray-800 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-gray-800 border border-gray-300 p-3 rounded-lg"
             type="password"
             name="password"
             placeholder="비밀번호"
             maxLength={30}
           />
           <input
-            className="text-gray-800 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-gray-800 border border-gray-300 p-3 rounded-lg"
             type="text"
             name="name"
             placeholder="이름"
             maxLength={20}
           />
           <input
-            className="text-gray-800 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-gray-800 border border-gray-300 p-3 rounded-lg"
             type="text"
             name="address"
             placeholder="주소"
             maxLength={100}
           />
-
           <div className="text-gray-800 flex gap-4 items-center">
             <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="role"
-                value="USER"
-                className="accent-blue-500"
-              />
+              <input type="radio" name="role" value="USER" className="accent-blue-500" />
               사용자
             </label>
-            <label className="text-gray-800 flex items-center gap-2">
-              <input
-                type="radio"
-                name="role"
-                value="ADMIN"
-                className="accent-blue-500"
-              />
+            <label className="flex items-center gap-2">
+              <input type="radio" name="role" value="ADMIN" className="accent-blue-500" />
               관리자
             </label>
           </div>
-
           <button
             className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors duration-200"
             type="submit"
