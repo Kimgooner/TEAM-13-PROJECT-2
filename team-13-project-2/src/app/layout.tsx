@@ -52,7 +52,7 @@ export default function RootLayout({
                 장바구니
               </Link>
               <Link
-                href="/products"
+                href="/admin"
                 className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
               >
                 관리
