@@ -45,11 +45,12 @@ export default function Page() {
         }),
       })
       .then((res) => {
-        alert(`환영합니다, ${res.name}님!`);
+        alert(res.msg);
         router.replace("/");
       })
       .catch((error) => {
-        alert(error.message);
+        console.log("에러 객체: ",error);
+        alert(`${error.resultCode} : ${error.msg}`);
       });
   };
 
