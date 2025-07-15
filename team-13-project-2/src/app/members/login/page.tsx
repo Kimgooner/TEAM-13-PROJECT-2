@@ -29,16 +29,13 @@ export default function Page() {
     }
 
     // ✅ 백엔드 연동은 추후 예정
-    // 지금은 메뉴 페이지로 이동
-    router.push("/menu");
+    router.push("/menu"); // 테스트용
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          로그인
-        </h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">로그인</h1>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
@@ -66,7 +63,7 @@ export default function Page() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           계정이 없으신가요?{" "}
-          <a href="/join" className="text-blue-500 hover:underline">
+          <a href="/members/signup" className="text-blue-500 hover:underline">
             회원가입
           </a>
         </p>
