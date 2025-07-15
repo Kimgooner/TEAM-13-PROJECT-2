@@ -28,10 +28,8 @@ export default function Page() {
       return;
     }
 
-    // ✅ 실제 로그인 호출 제거
-    // apiFetch(...)
-
-    // ✅ 단순 이동
+    // ✅ 백엔드 연동은 추후 예정
+    // 지금은 메뉴 페이지로 이동
     router.push("/menu");
   };
 
