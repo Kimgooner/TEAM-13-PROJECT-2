@@ -87,7 +87,7 @@ export default function Page() {
         </form>
 
         <p className="text-center text-gray-500 text-sm mt-4">
-          계정이 없으신가요? <a href="/join" className="text-blue-500 hover:underline">회원가입</a>
+          계정이 없으신가요? <a href="/members/signup" className="text-blue-500 hover:underline">회원가입</a>
         </p>
       </div>
     </div>
