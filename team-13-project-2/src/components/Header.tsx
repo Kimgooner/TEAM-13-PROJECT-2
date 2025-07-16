@@ -11,7 +11,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <span className="text-3xl">☕</span>
           <Link href="/" className="text-xl font-bold text-amber-900">
-            커피 맛있게 하는 집
+            Grids & Circles
           </Link>
         </div>
 
