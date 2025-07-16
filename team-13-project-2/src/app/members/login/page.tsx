@@ -41,21 +41,23 @@ export default function Page() {
         body: JSON.stringify({ email, password }),
       });
 
-      alert(res.msg);
       const role = res.data?.item?.role;
 
       if(role == "ADMIN"){
-        router.replace("/admin");
+        router.replace("/admin"); // 추후에 링크 변경
       }
 
       if(role == "USER"){
-        router.replace("/user");
+        router.replace("/user"); // 추후에 링크 변경경
       }
 
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
 
       switch (error.resultCode) {
+        case "400-1":
+          userFriendlyMsg = "이메일 형식의 입력이 아닙니다.";
+          break;
         default:
           if (error.msg) userFriendlyMsg = error.msg;
           break;
@@ -66,7 +68,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="bg-image flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">로그인</h1>
 

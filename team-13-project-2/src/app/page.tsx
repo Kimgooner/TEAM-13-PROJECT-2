@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 
+
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center bg-[#f7f3ef]">
+    <div className="bg-image flex flex-col items-center justify-center min-h-screen text-center bg-[#f7f3ef]">
       <div className="bg-white p-8 rounded-2xl shadow-lg max-w-lg">
         <h1 className="text-4xl font-bold text-[#6b4f3b] mb-4">
-          ☕ 커피 맛있게 하는 집
+          Grids & Circles
         </h1>
         <p className="text-[#8c7051] text-lg mb-6">
-          카페 메뉴를 관리하고<br />
-          손님들에게 최고의 커피를 제공합니다.
+          언제나 최고의 커피를 제공합니다.
         </p>
         <div className="flex flex-col gap-4">
           
