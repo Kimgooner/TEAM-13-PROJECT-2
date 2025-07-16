@@ -31,6 +31,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
         <header className="bg-[#d9c1a3] text-white shadow">
+          
+          {/* Navigation */}
           <nav className="flex justify-between items-center max-w-5xl mx-auto p-4">
             <div className="flex items-center gap-2">
               <span className="text-3xl">☕</span>
@@ -45,18 +47,16 @@ export default function RootLayout({
               >
                 메뉴
               </Link>
-              <Link
-                href="/wishlist"
-                className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
-              >
-                장바구니
-              </Link>
+
               <Link
                 href="/admin"
                 className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
               >
                 관리
               </Link>
+
+              {/* 로그인했으면 내정보/로그아웃 드롭다운을 띄우는 프로필 아이콘 반환*/}
+              {/* 로그인 안 되어있으면 로그인 링크 반환*/}
               <AuthNav />
             </div>
           </nav>
