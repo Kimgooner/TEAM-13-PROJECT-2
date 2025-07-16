@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 
 import "./globals.css";
-import AuthNav from "@/components/AuthNav";
+import "react-toastify/dist/ReactToastify.css";
+
+import Header from "@/components/Header";
+import { CartProvider } from "@/app/contexts/CartContext";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,59 +19,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Grids & Circles",
+  title: "커피 맛있게 하는 집",
   description: "카페 메뉴 관리 서비스",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ko">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        <header className="bg-[#d9c1a3] text-white shadow">
-          
-          {/* Navigation */}
-          <nav className="flex justify-between items-center max-w-5xl mx-auto p-4">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl">☕</span>
-              <Link href="/" className="text-xl font-bold text-amber-900">
-                Grids & Circles
-              </Link>
-            </div>
-            <div className="flex gap-4">
-              <Link
-                href="/menu"
-                className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
-              >
-                메뉴
-              </Link>
-
-              <Link
-                href="/admin"
-                className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
-              >
-                관리
-              </Link>
-
-              {/* 로그인했으면 내정보/로그아웃 드롭다운을 띄우는 프로필 아이콘 반환*/}
-              {/* 로그인 안 되어있으면 로그인 링크 반환*/}
-              <AuthNav />
-            </div>
-          </nav>
-        </header>
-
-        {/* Main */}
-        <main className="flex-1">{children}</main>
-
-        {/* Footer */}
-        <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4">
-          <p className="font-medium">© 2025 Grids & Circles</p>
-        </footer>
+        <CartProvider>
+          <Header /> {/* 네비게이션 + AuthNav 포함 */}
+          <ToastContainer position="top-center" autoClose={2000} />
+          <main className="flex-1">{children}</main>
+          <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4 mt-10">
+            <p className="font-medium">© 2025 커피 맛있게 하는 집</p>
+          </footer>
+        </CartProvider>
       </body>
     </html>
   );
