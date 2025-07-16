@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { apiFetch } from '@/app/lib/backend/client';
 import MenuItem from '@/components/MenuItem';
 import MenuDetailModal from '@/components/MenuDetailModal';
 
+/* 예제 데이터 -> REST API를 사용하는 방식으로 변경.
 const mockMenu = [
   {
     id: 1,
@@ -27,9 +29,34 @@ const mockMenu = [
     description: '달콤한 바닐라 시럽이 들어간 부드러운 라떼입니다.',
   },
 ];
+*/ 
 
 export default function MenuPage() {
+  const [menu, setMenu] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+
+  useEffect(() => { // 상품 목록을 받아오는 REST API.
+    const fetchMenu = async () => {
+      try {
+        const res = await apiFetch('/api/v1/products');
+        const products = res.data || [];
+
+        const mappedMenu = products.map((product: any) => ({
+          id: product.id,
+          name: product.productName,
+          price: product.price,
+          image: product.productImage,
+          description: product.description,
+        }));
+
+        setMenu(mappedMenu);
+      } catch (err) {
+        console.error('메뉴 불러오기 실패:', err);
+      }
+    };
+
+    fetchMenu();
+  }, []);
 
   const handleAddToCart = (item: any, quantity: number) => {
     console.log('장바구니에 담기:', item.name, '수량:', quantity);
@@ -41,7 +68,7 @@ export default function MenuPage() {
       <h1 className="text-2xl font-bold mb-4">커피 메뉴</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {mockMenu.map((item) => (
+        {menu.map((item) => (
           <MenuItem
             key={item.id}
             item={item}
