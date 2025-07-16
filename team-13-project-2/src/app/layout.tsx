@@ -37,7 +37,7 @@ export default function RootLayout({
           <Header /> {/* 네비게이션 + AuthNav 포함 */}
           <ToastContainer position="top-center" autoClose={2000} />
           <main className="flex-1">{children}</main>
-          <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4 mt-10">
+          <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4">
             <p className="font-medium">© 2025 Grids & Circles</p>
           </footer>
         </CartProvider>
