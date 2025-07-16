@@ -1,12 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { apiFetch } from "@/app/lib/backend/client";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
+  const [checkingLogin, setCheckingLogin] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      try {
+        const res = await apiFetch("/api/v1/members/me");
+        const role = res.data?.role;
+
+        if (role === "ADMIN") {
+          router.replace("/admin");
+        } else if (role === "USER") {
+          router.replace("/user");
+        } else {
+          setCheckingLogin(false); // role이 이상하거나 없으면 그대로 페이지 노출
+        }
+      } catch (err) {
+        setCheckingLogin(false); // 로그인 안 된 사용자 → 페이지 보여줌
+      }
+    };
+
+    checkLoggedIn();
+  }, [router]);
+
+  if (checkingLogin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+        <span className="ml-4 text-gray-600">로그인 상태 확인 중...</span>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,11 +75,11 @@ export default function Page() {
       const role = res.data?.item?.role;
 
       if(role == "ADMIN"){
-        router.replace("/admin"); // 추후에 링크 변경
+        window.location.href = "/";
       }
 
       if(role == "USER"){
-        router.replace("/user"); // 추후에 링크 변경경
+        window.location.href = "/";
       }
 
     } catch (error: any) {

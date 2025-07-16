@@ -6,6 +6,7 @@ interface MenuItemProps {
   item: {
     id: number;
     name: string;
+    description: string;
     price: number;
     image: string;
   };
@@ -23,8 +24,9 @@ export default function MenuItem({ item, onClick }: MenuItemProps) {
         alt={item.name}
         className="w-full h-32 object-cover mb-2 rounded"
       />
-      <h3 className="text-lg font-bold">{item.name}</h3>
-      <p className="text-sm text-gray-600">{item.price}원</p>
+      <h2 className="font-bold">{item.name}</h2>
+      <p className="text-sm text-gray-600">{item.description}</p>
+      <p className="font-semibold mt-1">{item.price.toLocaleString()}원</p>
     </div>
   );
 }
