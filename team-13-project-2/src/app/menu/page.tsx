@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import MenuItem from '@/components/MenuItem';
-import MenuDetailModal from '@/components/MenuDetailModal';
+import MenuList from '@/components/MenuList';
+import MenuDetailModal from '@/components/MenuDetailModal';  // MenuDetailModal 임포트
 
 const mockMenu = [
   {
@@ -31,24 +31,12 @@ const mockMenu = [
 export default function MenuPage() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
-  const handleAddToCart = (item: any, quantity: number) => {
-    console.log('장바구니에 담기:', item.name, '수량:', quantity);
-    // TODO: 추후 CartContext에 연동
-  };
-
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">커피 메뉴</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {mockMenu.map((item) => (
-          <MenuItem
-            key={item.id}
-            item={item}
-            onClick={() => setSelectedItem(item)}
-          />
-        ))}
-      </div>
+      {/* MenuList 컴포넌트에 mockMenu를 전달 */}
+      <MenuList menuItems={mockMenu} setSelectedItem={setSelectedItem} />
 
       {selectedItem && (
         <MenuDetailModal

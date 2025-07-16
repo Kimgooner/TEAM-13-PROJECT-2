@@ -18,19 +18,19 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/menu"
-            className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
+            className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors duration-200"
           >
             메뉴
           </Link>
 
           <Link
             href="/admin"
-            className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors"
+            className="hover:bg-[#8c7051] px-3 py-2 rounded-lg transition-colors duration-200"
           >
             관리
           </Link>
 
-          <CartIcon />
+          <CartIcon /> {/* 장바구니 아이콘 */}
           <AuthNav />
         </div>
       </nav>
