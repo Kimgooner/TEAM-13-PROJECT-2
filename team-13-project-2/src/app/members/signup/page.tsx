@@ -40,7 +40,6 @@ export default function Page() {
         body: JSON.stringify({ email, password, name, address }),
       });
 
-      alert(res.msg);
       router.replace("/members/login");
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
@@ -71,7 +70,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+    <div className="bg-image flex justify-center items-center min-h-screen bg-gray-100 px-4">
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">회원가입</h1>
 

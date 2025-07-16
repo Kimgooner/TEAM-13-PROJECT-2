@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "커피 맛있게 하는 집",
+  title: "Grids & Circles",
   description: "카페 메뉴 관리 서비스",
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
             <div className="flex items-center gap-2">
               <span className="text-3xl">☕</span>
               <Link href="/" className="text-xl font-bold text-amber-900">
-                커피 맛있게 하는 집
+                Grids & Circles
               </Link>
             </div>
             <div className="flex gap-4">
@@ -66,8 +66,8 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         {/* Footer */}
-        <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4 mt-10">
-          <p className="font-medium">© 2025 커피 맛있게 하는 집</p>
+        <footer className="bg-[#d9c1a3] text-[#6b4f3b] text-center py-4">
+          <p className="font-medium">© 2025 Grids & Circles</p>
         </footer>
       </body>
     </html>
