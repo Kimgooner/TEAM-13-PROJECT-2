@@ -45,7 +45,7 @@ export default function AuthNav() {
         setIsLoggedIn(false);
         setUserName("");
         setIsDropdownOpen(false);
-        router.refresh();
+        router.push("/");
     };
 
     const toggleDropdown = () => {
