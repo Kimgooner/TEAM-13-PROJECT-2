@@ -1,37 +1,27 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/contexts/CartContext';
-import MiniCart from './MiniCart';
 
 export default function CartIcon() {
   const { cartItems } = useCart();
-  const [isOpen, setIsOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [isClicked, setIsClicked] = useState(false);  // 클릭 상태 관리
+  const router = useRouter();
 
   const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () =>
-      document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleClick = () => {
+    setIsClicked((prevState) => !prevState);  // 클릭 상태 전환
+    router.push('/cart');  // 장바구니 페이지로 이동
+  };
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className="relative">
       <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="text-xl relative"
+        onClick={handleClick}
+        className={`text-xl relative px-4 py-2 transition duration-300 
+          ${isClicked ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
       >
         🛒
         {totalCount > 0 && (
@@ -40,8 +30,6 @@ export default function CartIcon() {
           </span>
         )}
       </button>
-
-      {isOpen && <MiniCart onClose={() => setIsOpen(false)} />} {/* ✅ 핵심 수정 */}
     </div>
   );
 }
