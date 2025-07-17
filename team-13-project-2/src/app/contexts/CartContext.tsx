@@ -9,6 +9,7 @@ interface CartItem {
   name: string;
   price: number;
   image: string;
+  category: string;
   quantity: number;
   category: string; // category 추가
 }
