@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 // OrderItemDto 타입
 type OrderItem = {
@@ -23,84 +23,50 @@ type Order = {
     orderItems: OrderItem[];
 };
 
+// API 응답 타입
+type OrdersApiResponse = {
+    resultCode: string;
+    msg: string;
+    data: Order[];
+};
+
 export default function AdminPage() {
     const router = useRouter();
 
-    // 더미 주문 데이터
-    const dummyOrders: Order[] = [
-        {
-            id: 1,
-            createDate: '2025-07-17T12:20:00.000Z',
-            modifyDate: '2025-07-17T12:21:00.000Z',
-            totalPrice: 12000,
-            address: '서울시 강남구 1번지',
-            order_status: 'ORDERED',
-            orderItems: [
-                {
-                    id: 1,
-                    productName: '아메리카노',
-                    quantity: 2,
-                    productPrice: 4000,
-                    totalPrice: 8000,
-                },
-                {
-                    id: 2,
-                    productName: '카페라떼',
-                    quantity: 1,
-                    productPrice: 4000,
-                    totalPrice: 4000,
-                },
-            ],
-        },
-        {
-            id: 2,
-            createDate: '2025-07-17T12:22:00.000Z',
-            modifyDate: '2025-07-17T12:25:00.000Z',
-            totalPrice: 5000,
-            address: '경기도 성남시 분당구',
-            order_status: 'DELIVERED',
-            orderItems: [
-                {
-                    id: 3,
-                    productName: '에스프레소',
-                    quantity: 1,
-                    productPrice: 2500,
-                    totalPrice: 2500,
-                },
-                {
-                    id: 4,
-                    productName: '아이스티',
-                    quantity: 1,
-                    productPrice: 2500,
-                    totalPrice: 2500,
-                },
-            ],
-        },
-        // 필요하다면 다른 상태의 주문도 더 추가 가능
-    ];
-
-    // 주문 목록 상태
+    // 주문 상태
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
-
-    // 상태 필터
+    const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState('ALL');
 
-    // 주문 상태별 옵션 추출 (중복제거, ALL 추가)
-    const orderStatusList: string[] = [
-        ...Array.from(new Set(dummyOrders.map(o => o.order_status))),
-    ];
-
+    // 주문목록 API에서 받아오기
     useEffect(() => {
-        setOrders(dummyOrders);
-        setLoading(false);
+        setLoading(true);
+        setError(null);
+        fetch('http://localhost:8080/api/v1/orders')
+            .then((res) => {
+                if (!res.ok) throw new Error('주문 목록 불러오기 실패');
+                return res.json();
+            })
+            .then((data: OrdersApiResponse) => {
+                setOrders(Array.isArray(data.data) ? data.data : []);
+            })
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
     }, []);
 
-    // 필터링된 주문 목록
+    // order_status 옵션 (중복 없는 실제 주문에서 추출)
+    const orderStatusList = useMemo(() => {
+        const set = new Set<string>();
+        orders.forEach((o) => set.add(o.order_status));
+        return Array.from(set);
+    }, [orders]);
+
+    // 주문 상태별 필터
     const filteredOrders =
         statusFilter === 'ALL'
             ? orders
-            : orders.filter(order => order.order_status === statusFilter);
+            : orders.filter((order) => order.order_status === statusFilter);
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
@@ -123,10 +89,10 @@ export default function AdminPage() {
                     <select
                         className="ml-4 border px-2 py-1 rounded"
                         value={statusFilter}
-                        onChange={e => setStatusFilter(e.target.value)}
+                        onChange={(e) => setStatusFilter(e.target.value)}
                     >
                         <option value="ALL">전체</option>
-                        {orderStatusList.map(status => (
+                        {orderStatusList.map((status) => (
                             <option key={status} value={status}>
                                 {status}
                             </option>
@@ -135,11 +101,14 @@ export default function AdminPage() {
                 </div>
 
                 {loading && <p>주문 목록을 불러오는 중...</p>}
-                {!loading && filteredOrders.length === 0 && (
+                {error && (
+                    <p className="text-red-500">에러: {error}</p>
+                )}
+                {!loading && !error && filteredOrders.length === 0 && (
                     <p>해당 주문 상태의 내역이 없습니다.</p>
                 )}
                 <ul className="space-y-6">
-                    {filteredOrders.map(order => (
+                    {filteredOrders.map((order) => (
                         <li key={order.id} className="border rounded-lg shadow p-5">
                             <div className="flex justify-between items-center mb-2">
                                 <div>
@@ -153,7 +122,8 @@ export default function AdminPage() {
                                 <span className="font-semibold">주소:</span> {order.address}
                             </div>
                             <div className="mb-2">
-                                <span className="font-semibold">총 금액:</span> {order.totalPrice.toLocaleString()}원
+                                <span className="font-semibold">총 금액:</span>{' '}
+                                {order.totalPrice.toLocaleString()}원
                             </div>
                             <div className="mb-2">
                                 <span className="font-semibold">주문일:</span>{' '}
@@ -166,9 +136,10 @@ export default function AdminPage() {
                             <div className="mt-3">
                                 <span className="font-semibold">주문 항목:</span>
                                 <ul className="list-disc ml-6 mt-2">
-                                    {order.orderItems.map(item => (
+                                    {order.orderItems.map((item) => (
                                         <li key={item.id}>
-                                            <span className="font-semibold">{item.productName}</span> ({item.productPrice.toLocaleString()}원)
+                                            <span className="font-semibold">{item.productName}</span> (
+                                            {item.productPrice.toLocaleString()}원)
                                             × {item.quantity} = {item.totalPrice.toLocaleString()}원
                                         </li>
                                     ))}
