@@ -27,7 +27,7 @@ export default function AuthNav() {
         await apiFetch("/api/v1/members/logout", { method: "POST" });
         setIsLoggedIn(false);
         setUserName("");
-        router.replace("/"); // 로그아웃 후 홈으로 이동
+        window.location.href = "/";
     };
 
     if (isLoggedIn) {
