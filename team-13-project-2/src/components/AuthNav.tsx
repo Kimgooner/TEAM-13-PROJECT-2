@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -84,6 +84,13 @@ export default function AuthNav() {
                             onClick={() => setIsDropdownOpen(false)}
                         >
                             내 정보
+                        </Link>
+                        <Link
+                            href="/user/list"
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                            onClick={() => setIsDropdownOpen(false)}
+                        >
+                            주문 내역
                         </Link>
                         <hr className="border-gray-200 my-1" />
                         <button
