@@ -1,3 +1,5 @@
+// src/app/contexts/CartContext.tsx
+
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
@@ -8,6 +10,7 @@ interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  category: string; // category 추가
 }
 
 interface CartContextType {
@@ -23,17 +26,12 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addToCart = (
-    item: Omit<CartItem, 'quantity'>,
-    quantity: number
-  ) => {
+  const addToCart = (item: Omit<CartItem, 'quantity'>, quantity: number) => {
     setCartItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
+          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
         );
       } else {
         return [...prev, { ...item, quantity }];
