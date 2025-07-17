@@ -2,16 +2,45 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '@/app/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
 import Checkout from '@/components/Checkout';
+import { apiFetch } from "@/app/lib/backend/client";
+
+interface WishlistItem {
+  id: number;
+  productId: number;
+  productName: string;
+  productPrice: number;
+  quantity: number;
+  itemTotalPrice: number;
+  email: string;
+}
 
 export default function CartPage() {
   const { cartItems, clearCart, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const userRes = await apiFetch('/api/v1/members/me');
+        const userId = userRes.data?.id;
+
+        if(!userId) throw new Error('사용자 정보를 불러올 수 없습니다.');
+
+        const cartRes = await fetch(`api/v1/wishlist/member/${userId}`);
+      } catch (err) {
+        console.error('장바구니 불러오기 실패')
+      }
+    };
+
+    fetchCart();
+
+  }, []);
 
   const total = cartItems.reduce(
     (sum: number, item) => sum + item.price * item.quantity,
@@ -50,19 +79,21 @@ export default function CartPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-2 bg-gray-200 rounded"
+                        className="text-gray-800 px-2 py-1 bg-white rounded"
                       >
                         -
                       </button>
-                      <span>{item.quantity}</span>
+                      <span className="appearance-none border rounded px-2 py-1 w-16 text-center">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-2 bg-gray-200 rounded"
+                        className="text-gray-800 px-2 py-1 bg-white rounded"
                       >
                         +
                       </button>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-semibold mt-1">
                       {item.price.toLocaleString()}원
                     </p>
                   </div>
@@ -84,13 +115,6 @@ export default function CartPage() {
           </div>
 
           <div className="flex justify-end space-x-4 mt-6">
-            <button
-              onClick={() => router.push('/menu')}
-              className="px-4 py-2 border rounded hover:bg-gray-100"
-            >
-              상품 추가하기
-            </button>
-
             <button
               onClick={clearCart}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
