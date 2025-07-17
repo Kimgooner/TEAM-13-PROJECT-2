@@ -73,10 +73,10 @@ export default function AdminProductPage() {
 
             {editingProduct && (
                 <ProductFormModal
-                initialData={editingProduct}
-                onClose={() => setEditingProduct(null)}
-                onSave={fetchProducts}
-                />
+                    initialData={editingProduct}
+                    onClose={() => setEditingProduct(null)}
+                    onSave={fetchProducts}
+                ></ProductFormModal>
             )}
         </div>
     );
