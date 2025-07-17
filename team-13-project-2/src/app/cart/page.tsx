@@ -32,7 +32,7 @@ export default function CartPage() {
 
         if(!userId) throw new Error('사용자 정보를 불러올 수 없습니다.');
 
-        const cartRes = await fetch(`api/v1/wishlist/member/${userId}`);
+        const cartRes = await apiFetch(`api/v1/wishlist/member/${userId}`);
       } catch (err) {
         console.error('장바구니 불러오기 실패')
       }
