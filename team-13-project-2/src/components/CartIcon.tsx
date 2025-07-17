@@ -1,27 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/contexts/CartContext';
-import { usePathname } from 'next/navigation'; // Next.js 13.x에서 경로를 추적하는 데 사용
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function CartIcon() {
   const { cartItems } = useCart();
-  const [isClicked, setIsClicked] = useState(false);  // 클릭 상태 관리
+  const [isClicked, setIsClicked] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();  // 현재 페이지 경로
+  const pathname = usePathname();
 
   const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleClick = () => {
-    setIsClicked((prevState) => !prevState);  // 클릭 상태 전환
-    router.push('/cart');  // 장바구니 페이지로 이동
+    setIsClicked((prev) => !prev);
+    router.push('/cart');
   };
 
-  // 페이지가 변경될 때마다 클릭 상태를 초기화
   useEffect(() => {
     setIsClicked(false);
-  }, [pathname]);  // pathname이 변경될 때마다 isClicked 상태 초기화
+  }, [pathname]);
 
   return (
     <div className="relative">
