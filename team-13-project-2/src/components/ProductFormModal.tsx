@@ -143,41 +143,56 @@ export default function ProductFormModal({ initialData, onClose, onSave }: Produ
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
           <h2 className="text-gray-800 text-xl font-bold mb-4">{isEdit ? '상품 수정' : '상품 등록'}</h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <input
-              type="text"
-              placeholder="상품명"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              required
-              className="text-gray-800 border border-gray-300 p-2 rounded"
-            />
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <label className="block text-gray-700 font-semibold">
+            상품명
+          </label>
+          <input
+            type="text"
+            placeholder="상품명"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            required
+            className="text-gray-800 border border-gray-300 p-2 rounded w-full mb-1"
+/>
 
+          <label className="block text-gray-700 font-semibold">
+            가격
+          </label>
             <input
               type="number"
               placeholder="가격"
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
               required
-              className="text-gray-800 border border-gray-300 p-2 rounded"
+              className="text-gray-800 border border-gray-300 p-2 rounded mb-1"
             />
 
+          <label className="block text-gray-700 font-semibold">
+            상품 설명
+          </label>
             <textarea
               placeholder="상품 설명"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="text-gray-800 border border-gray-300 p-2 rounded h-24"
+              className="text-gray-800 border border-gray-300 p-2 rounded h-24 mb-1"
             />
 
+          <label className="block text-gray-700 font-semibold">
+            재고 수량
+          </label>
             <input
               type="number"
               placeholder="재고 수량"
               value={stock}
               onChange={(e) => setStock(Number(e.target.value))}
-              required
-              className="text-gray-800 border border-gray-300 p-2 rounded"
+              required 
+              className="text-gray-800 border border-gray-300 p-2 rounded mb-1"
             />
 
+          <label className="block text-gray-700 font-semibold">
+            상품 이미지
+          </label>
             <input
               type="file"
               accept="image/*"
@@ -185,7 +200,6 @@ export default function ProductFormModal({ initialData, onClose, onSave }: Produ
               className="border border-gray-300 p-2 rounded"
             />
 
-            // 필요하면 이미지 미리보기도 추가 가능
             {imageUrl && (
               <img
                 src={imageUrl}

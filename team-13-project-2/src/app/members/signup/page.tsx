@@ -16,9 +16,9 @@ export default function Page() {
         const role = res.data?.role;
 
         if (role === "ADMIN") {
-          router.replace("/admin");
+          window.location.href = "/";
         } else if (role === "USER") {
-          router.replace("/user");
+          window.location.href = "/";
         } else {
           setCheckingLogin(false); // role이 이상하거나 없으면 그대로 페이지 노출
         }
@@ -71,7 +71,7 @@ export default function Page() {
         body: JSON.stringify({ email, password, name, address }),
       });
 
-      router.replace("/members/login");
+      router.push("/members/login");
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
 
