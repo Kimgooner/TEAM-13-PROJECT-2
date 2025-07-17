@@ -71,7 +71,7 @@ export default function Page() {
         body: JSON.stringify({ email, password, name, address }),
       });
 
-      router.replace("/members/login");
+      router.push("/members/login");
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
 

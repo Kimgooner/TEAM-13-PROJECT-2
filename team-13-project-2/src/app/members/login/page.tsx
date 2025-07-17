@@ -16,9 +16,9 @@ export default function Page() {
         const role = res.data?.role;
 
         if (role === "ADMIN") {
-          router.replace("/admin");
+          window.location.href = "/";
         } else if (role === "USER") {
-          router.replace("/user");
+          window.location.href = "/";
         } else {
           setCheckingLogin(false); // role이 이상하거나 없으면 그대로 페이지 노출
         }
