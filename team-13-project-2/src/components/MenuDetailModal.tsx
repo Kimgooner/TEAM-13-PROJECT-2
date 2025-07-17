@@ -9,6 +9,7 @@ interface MenuDetailModalProps {
     name: string;
     price: number;
     image: string;
+    category: string;
     description: string;
   };
   onClose: () => void;
