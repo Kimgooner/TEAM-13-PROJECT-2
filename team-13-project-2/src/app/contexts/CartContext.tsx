@@ -11,7 +11,6 @@ interface CartItem {
   image: string;
   category: string;
   quantity: number;
-  category: string; // category 추가
 }
 
 interface CartContextType {
