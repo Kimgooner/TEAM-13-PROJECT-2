@@ -123,13 +123,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (!memberId) throw new Error('사용자 정보 없음');
 
       // 서버 전체 삭제 API가 없으면 클라이언트만 초기화하는 정도
+      await apiFetch(`/api/v1/wishlist/member/${memberId}`, {
+        method: 'DELETE'
+      });
       setCartItems([]);
     } catch (error) {
       console.error('장바구니 비우기 실패', error);
     }
   };
 
-  // 상품 추가 (필요 시 구현)
   const addToCart = async (item: Omit<CartItem, 'quantity'>, quantity: number) => {
     try {
       const memberRes = await apiFetch('/api/v1/members/me');
