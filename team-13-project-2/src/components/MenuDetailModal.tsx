@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCart } from '@/app/contexts/CartContext';
+import { useLoginStatus } from '@/app/hooks/useLoginStatus'; 
 import { toast } from "react-toastify";
 
 interface MenuDetailModalProps {
@@ -22,10 +23,35 @@ export default function MenuDetailModal({ item, onClose }: MenuDetailModalProps)
 
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const isLoggedIn = useLoginStatus();
 
   const increase = () => setQuantity((prev) => prev + 1);
   const decrease = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
+  };
+
+  const handleAddToCart = async () => {
+    if (!isLoggedIn) {
+      toast.info('로그인 후 이용해주세요.', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+      return;
+    }
+
+    try {
+      await addToCart(item, quantity);
+      toast.success(`${item.name} ${quantity}개가 장바구니에 담겼습니다.`, {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      onClose();
+    } catch (error) {
+      toast.error('장바구니 담기에 실패했습니다.', {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    }
   };
 
   return (
@@ -71,21 +97,14 @@ export default function MenuDetailModal({ item, onClose }: MenuDetailModalProps)
         {/* 버튼 영역 */}
         <div className="flex justify-end space-x-2">
           <button
-            onClick={() => {
-              addToCart(item, quantity);
-              toast.success(`${item.name} ${quantity}개가 장바구니에 담겼습니다.`, {
-                position: "top-center",
-                autoClose: 2000,
-              });
-              onClose();
-            }}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={handleAddToCart}
+            className="bg-[#6b4f3b] text-white px-4 py-2 rounded hover:bg-[#8c7051]"
           >
             장바구니 담기
           </button>
           <button
             onClick={onClose}
-            className="border px-4 py-2 rounded text-black"
+            className="border px-4 py-2 rounded text-black hover:bg-[#8c7051] hover:text-white"
           >
             닫기
           </button>

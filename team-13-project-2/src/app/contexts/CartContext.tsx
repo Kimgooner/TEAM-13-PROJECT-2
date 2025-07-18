@@ -71,7 +71,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // 초기 로드
   useEffect(() => {
-    reloadCart();
+    const checkAndLoadCart = async () => {
+      try {
+        const memberRes = await apiFetch('/api/v1/members/me');
+        const memberId = memberRes.data?.id;
+        if (memberId) {
+          await reloadCart();
+        } else {
+          console.info('비로그인 상태: 장바구니 로드 생략');
+        }
+      } catch (error) {
+        console.info('비로그인 상태: 장바구니 로드 생략');
+      }
+    };
+    checkAndLoadCart();
   }, []);
 
   // 수량 변경

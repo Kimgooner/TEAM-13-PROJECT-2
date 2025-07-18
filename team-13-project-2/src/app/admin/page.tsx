@@ -114,7 +114,7 @@ export default function AdminPage() {
             <section className="mb-12">
                 <h1 className="text-2xl font-bold mb-6">관리자 페이지</h1>
                 <button
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="px-6 py-3 bg-[#6b4f3b] text-white rounded-lg hover:bg-[#8c7051] transition"
                     onClick={() => router.push('/admin/edit')}
                 >
                     커피 메뉴 조정 페이지로 이동
