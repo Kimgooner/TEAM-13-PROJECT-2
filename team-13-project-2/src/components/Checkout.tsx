@@ -11,6 +11,12 @@ interface CheckoutProps {
   clearCart: () => void;
 }
 
+interface WishlistItem {
+  productId: number;
+  quantity: number;
+  // 필요한 다른 필드들도 여기에 추가 가능
+}
+
 export default function Checkout({ totalPrice, onClose, clearCart }: CheckoutProps) {
   const [address, setAddress] = useState('');
   const router = useRouter();
@@ -37,6 +43,28 @@ export default function Checkout({ totalPrice, onClose, clearCart }: CheckoutPro
       const memberId = memberRes.data?.id;
 
       if (!memberId) throw new Error('사용자 정보 없음');
+
+      const wishlistRes = await apiFetch(`/api/v1/wishlist/member/${memberId}`);
+      const wishlistItems: WishlistItem[] = wishlistRes.data || []
+
+      const payload = {
+        productIds: wishlistItems.map(item => item.productId),
+        quantities: wishlistItems.map(item => item.quantity),
+        address
+      };
+
+      if (wishlistItems.length === 0) {
+        alert('장바구니에 상품이 없습니다.');
+        return;
+      }
+
+      await apiFetch('/api/v1/orders', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       await apiFetch(`/api/v1/wishlist/member/${memberId}`, {
         method: 'DELETE'
