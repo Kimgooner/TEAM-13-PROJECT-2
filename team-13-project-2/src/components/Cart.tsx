@@ -99,6 +99,7 @@ export default function Cart({ cartItems, setCartItems }: CartProps) {
           <Checkout 
           totalPrice={total}
           onClose={() => setShowModal(false)} 
+          clearCart={clearCart}
            />
         </Modal>
       )}
