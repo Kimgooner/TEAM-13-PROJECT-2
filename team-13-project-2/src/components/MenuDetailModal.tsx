@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCart } from '@/app/contexts/CartContext';
+import { toast } from "react-toastify";
 
 interface MenuDetailModalProps {
   item: {
@@ -9,6 +10,7 @@ interface MenuDetailModalProps {
     name: string;
     price: number;
     image: string;
+    category: string;
     description: string;
   };
   onClose: () => void;
@@ -68,7 +70,10 @@ export default function MenuDetailModal({ item, onClose }: MenuDetailModalProps)
           <button
             onClick={() => {
               addToCart(item, quantity);
-              alert(`${item.name} ${quantity}개가 장바구니에 담겼습니다.`);
+              toast.success(`${item.name} ${quantity}개가 장바구니에 담겼습니다.`, {
+                position: "top-center",
+                autoClose: 2000,
+              });
               onClose();
             }}
             className="bg-blue-600 text-white px-4 py-2 rounded"

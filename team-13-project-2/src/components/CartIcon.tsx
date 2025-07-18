@@ -1,37 +1,32 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import { useCart } from '@/app/contexts/CartContext';
-import MiniCart from './MiniCart';
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function CartIcon() {
   const { cartItems } = useCart();
-  const [isOpen, setIsOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [isClicked, setIsClicked] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+  const handleClick = () => {
+    setIsClicked((prev) => !prev);
+    router.push('/cart');
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () =>
-      document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useEffect(() => {
+    setIsClicked(false);
+  }, [pathname]);
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className="relative">
       <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="text-xl relative"
+        onClick={handleClick}
+        className={`text-xl relative px-4 py-2 transition duration-300 
+          ${isClicked ? 'bg-[#8c7051]' : 'hover:bg-[#8c7051]'} text-white rounded-lg`}
       >
         🛒
         {totalCount > 0 && (
@@ -40,8 +35,6 @@ export default function CartIcon() {
           </span>
         )}
       </button>
-
-      {isOpen && <MiniCart onClose={() => setIsOpen(false)} />} {/* ✅ 핵심 수정 */}
     </div>
   );
 }

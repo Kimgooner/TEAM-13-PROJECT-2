@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { MenuItem } from './Cart';
 
 interface ModalProps {
@@ -26,10 +26,10 @@ export default function Modal({ isOpen, onClose, cartItems, children }: ModalPro
       <div className="bg-white w-[960px] max-h-[90vh] overflow-y-auto rounded-lg shadow-lg p-8 relative flex flex-col gap-6 sm:flex-row sm:gap-10">
         {/* ✏️ 왼쪽: 장바구니 아이템 리스트 */}
         <div className="w-full sm:w-1/2">
-          <h2 className="text-xl font-bold mb-4">🧾 주문 내역</h2>
+          <h2 className="text-gray-800 text-xl font-bold mb-4">🧾 주문 내역</h2>
           <ul className="space-y-3 text-base max-h-[50vh] overflow-y-auto">
             {cartItems.map((item) => (
-              <li key={item.name} className="flex justify-between border-b pb-1">
+              <li key={item.name} className="text-gray-800 flex justify-between border-b pb-1">
                 <span>{item.name} x {item.quantity}</span>
                 <span>{(item.price * item.quantity).toLocaleString()}원</span>
               </li>
@@ -38,11 +38,12 @@ export default function Modal({ isOpen, onClose, cartItems, children }: ModalPro
         </div>
 
         {/* ✅ 오른쪽: children 영역 (결제 등) */}
-        <div className="w-full sm:w-1/2 flex flex-col justify-between">
-          <div>{children}</div>
+        <div className="text-gray-800 w-full sm:w-1/2 flex flex-col justify-between">
+          <div>{React.isValidElement(children) && React.cloneElement(children as React.ReactElement<any>, { onClose })}
+          </div>
 
           {/* 🔻 비어 있는 하단 공간을 UI로 채움 */}
-          <div className="mt-6 text-sm text-gray-500 text-center">
+          <div className="text-gray-800 mt-6 text-sm text-gray-500 text-center">
             결제 전 주문 내역을 꼭 확인해주세요 ☕
           </div>
         </div>
