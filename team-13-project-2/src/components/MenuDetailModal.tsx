@@ -10,6 +10,7 @@ interface MenuDetailModalProps {
     name: string;
     price: number;
     image: string;
+    status: string,
     category: string;
     description: string;
   };
@@ -17,6 +18,8 @@ interface MenuDetailModalProps {
 }
 
 export default function MenuDetailModal({ item, onClose }: MenuDetailModalProps) {
+  if (item.status !== 'SALE') return null;
+
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
