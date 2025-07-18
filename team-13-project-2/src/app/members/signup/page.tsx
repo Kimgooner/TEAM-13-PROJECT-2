@@ -191,7 +191,7 @@ export default function Page() {
           )}
 
           <button
-            className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+            className="bg-[#6b4f3b] text-white p-3 rounded-lg hover:bg-[#8c7051] transition-colors duration-200"
             type="submit"
           >
             회원가입
@@ -200,7 +200,7 @@ export default function Page() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           이미 계정이 있으신가요?{" "}
-          <a href="/members/login" className="text-blue-500 hover:underline">
+          <a href="/members/login" className="text-[#8c7051] font-medium hover:underline">
             로그인
           </a>
         </p>

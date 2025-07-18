@@ -1,11 +1,14 @@
 'use client';
 
 import { useCart } from '@/app/contexts/CartContext';
+import { useLoginStatus } from '@/app/hooks/useLoginStatus';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function CartIcon() {
   const { cartItems } = useCart();
+  const isLoggedIn = useLoginStatus();
   const [isClicked, setIsClicked] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -13,6 +16,15 @@ export default function CartIcon() {
   const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleClick = () => {
+    if (!isLoggedIn) {
+      toast.info('로그인 후 이용해주세요.', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+      router.push('/members/login');
+      return;
+    }
+
     setIsClicked((prev) => !prev);
     router.push('/cart');
   };

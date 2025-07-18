@@ -17,7 +17,7 @@ export default function CartPage() {
     <div className="p-6">
       <button
         onClick={() => router.push('/menu')}
-        className="mb-4 px-4 py-2 border rounded hover:bg-gray-100"
+        className="mb-4 px-4 py-2 border rounded font-semibold text-[#8c7051] hover:bg-[#8c7051] hover:text-white"
       >
         상품 추가하기
       </button>
