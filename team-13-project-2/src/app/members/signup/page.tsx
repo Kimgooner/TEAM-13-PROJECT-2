@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { apiFetch } from "@/app/lib/backend/client";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+
 
 export default function Page() {
   const router = useRouter();
@@ -95,8 +97,8 @@ export default function Page() {
           if (error.msg) userFriendlyMsg = error.msg;
           break;
       }
-
       setErrorMsg(` ${userFriendlyMsg}`);
+      toast.error(errorMsg);
     }
   };
 
@@ -104,12 +106,6 @@ export default function Page() {
     <div className="bg-image flex justify-center items-center min-h-screen bg-gray-100 px-4">
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">회원가입</h1>
-
-        {errorMsg && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-400">
-            {errorMsg}
-          </div>
-        )}
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
