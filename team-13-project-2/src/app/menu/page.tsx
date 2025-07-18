@@ -41,10 +41,13 @@ export default function MenuPage() {
         const res = await apiFetch('/api/v1/products');
         const products = res.data || [];
 
-        const mappedMenu = products.map((product: any) => ({
+        const mappedMenu = products
+        .filter((product: any) => product.status === "SALE") // SALE인 경우만
+        .map((product: any) => ({
           id: product.id,
           name: product.productName,
           price: product.price,
+          status: product.status,
           image: product.productImage,
           description: product.description,
         }));
