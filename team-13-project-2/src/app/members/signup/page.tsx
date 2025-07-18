@@ -11,6 +11,10 @@ export default function Page() {
   const [checkingLogin, setCheckingLogin] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  //관리자 선택했는지 여부
+  const [isAdminRole, setIsAdminRole] = useState(false);
+
+
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
@@ -59,10 +63,24 @@ export default function Page() {
     if (!address) return setErrorMsg("주소를 입력해주세요.");
     if (!role) return setErrorMsg("역할을 선택해주세요.");
 
+    let adminCode = "";
+    if (role === "ADMIN") {
+      const adminCodeInput = form.elements.namedItem("adminCode") as HTMLInputElement;
+      if (!adminCodeInput || !adminCodeInput.value.trim()) {
+        return setErrorMsg("관리자 코드를 입력해주세요.");
+      }
+      adminCode = adminCodeInput.value.trim();
+    }
+
     const endpoint =
       role === "USER"
         ? "/api/v1/members/signup/user"
         : "/api/v1/members/signup/admin";
+
+    const body: any = { email, password, name, address };
+    if (role === "ADMIN") {
+      body.adminCode = adminCode;
+    }
 
     try {
       const res = await apiFetch(endpoint, {
@@ -70,35 +88,34 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, name, address }),
+        body: JSON.stringify(body),
       });
 
+      toast.success("회원가입이 완료되었습니다. 로그인 해주세요.");
       router.push("/members/login");
     } catch (error: any) {
       let userFriendlyMsg = "알 수 없는 오류가 발생했습니다.";
 
+
       switch (error.resultCode) {
         case "400-1":
-          userFriendlyMsg = "이메일 형식의 입력이 아닙니다.";
+          userFriendlyMsg = "입력값이 유효하지 않습니다. (예: 이메일 형식 오류)";
           break;
-        case "400-2":
+        case "409-1":
           userFriendlyMsg = "이미 가입된 이메일입니다.";
           break;
-        case 403:
-          userFriendlyMsg = "권한이 없습니다.";
+        case "403-1": // 권한 없음 오류 추가
+          userFriendlyMsg = "관리자 등록 코드가 유효하지 않습니다.";
           break;
-        case 409:
-          userFriendlyMsg = "이미 존재하는 사용자입니다.";
-          break;
-        case 500:
+        case "500-1": 
           userFriendlyMsg = "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
           break;
         default:
           if (error.msg) userFriendlyMsg = error.msg;
           break;
       }
-      setErrorMsg(` ${userFriendlyMsg}`);
-      toast.error(errorMsg);
+      setErrorMsg(userFriendlyMsg);
+      toast.error(userFriendlyMsg);
     }
   };
 
@@ -137,15 +154,42 @@ export default function Page() {
             maxLength={100}
           />
           <div className="text-gray-800 flex gap-4 items-center">
-            <label className="flex items-center gap-2">
-              <input type="radio" name="role" value="USER" className="accent-blue-500" />
-              사용자
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="radio" name="role" value="ADMIN" className="accent-blue-500" />
-              관리자
-            </label>
-          </div>
+  <label className="flex items-center gap-2">
+    {/* [수정] onChange와 defaultChecked 추가 */}
+    <input 
+      type="radio" 
+      name="role" 
+      value="USER" 
+      className="accent-blue-500" 
+      defaultChecked 
+      onChange={() => setIsAdminRole(false)} 
+    />
+    사용자
+  </label>
+  <label className="flex items-center gap-2">
+    {/* [수정] onChange 추가 */}
+    <input 
+      type="radio" 
+      name="role" 
+      value="ADMIN" 
+      className="accent-blue-500" 
+      onChange={() => setIsAdminRole(true)} 
+    />
+    관리자
+  </label>
+</div>
+
+          {/* admin true면 관리자 코드 입력 필드*/}
+          {isAdminRole && (
+            <input
+              className="text-gray-800 border border-gray-300 p-3 rounded-lg"
+              type="text"
+              name="adminCode"
+              placeholder="관리자 코드"
+              maxLength={50}
+            />
+          )}
+
           <button
             className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors duration-200"
             type="submit"
@@ -164,3 +208,4 @@ export default function Page() {
     </div>
   );
 }
+
