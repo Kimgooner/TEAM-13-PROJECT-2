@@ -2,6 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
+import { apiFetch } from '../lib/backend/client';
+
+type User = {
+    id: number;
+    username: string;
+    role: string;
+  };
 
 // OrderItemDto 타입
 type OrderItem = {
@@ -33,11 +40,34 @@ type OrdersApiResponse = {
 export default function AdminPage() {
     const router = useRouter();
 
+    const [user, setUser] = useState<User | null>(null);
+    const [accessDenied, setAccessDenied] = useState(false);
+
     // 주문 상태
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState('ALL');
+
+    // 사용자 정보 요청.
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const res = await apiFetch('/api/v1/members/me');
+            if (res.data?.role !== 'ADMIN') {
+              setAccessDenied(true);
+              setTimeout(() => router.push('/'), 5000); // 5초 후 홈으로 이동
+            } else {
+              setUser(res);
+            }
+          } catch (err) {
+            setAccessDenied(true);
+            setTimeout(() => router.push('/'), 5000);
+          }
+        };
+    
+        fetchUser();
+      }, [router]);
 
     // 주문목록 API에서 받아오기
     useEffect(() => {
@@ -67,6 +97,16 @@ export default function AdminPage() {
         statusFilter === 'ALL'
             ? orders
             : orders.filter((order) => order.order_status === statusFilter);
+
+    if (accessDenied) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen text-center">
+            <h1 className="text-3xl font-bold mb-4">⚠️ 접근 제한 ⚠️</h1>
+            <p className="text-lg">관리자만 접근 가능한 페이지입니다.</p>
+            <p className="text-sm text-gray-500 mt-2">5초 후 홈으로 이동합니다...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
