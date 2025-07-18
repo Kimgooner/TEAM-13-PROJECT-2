@@ -1,9 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { apiFetch } from '../lib/backend/client';
+
+interface OrderItem {
+  id: number;
+  productName: string;
+  productImage: string;
+  productPrice: number;
+  quantity: number;
+  totalPrice: number;
+}
+
+interface Order {
+  id: number;
+  address: string;
+  order_status: string;
+  totalPrice: number;
+  orderItems: OrderItem[];
+}
 
 export default function UserOrderListPage() {
-  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  /*
   const [orders, setOrders] = useState<any[]>([
     {
       id: 1,
@@ -33,79 +59,118 @@ export default function UserOrderListPage() {
       deliveryDate: '7/13(화) 도착'
     },
   ]);  // 주문 내역 상태
+  */
 
-  const [filteredOrders, setFilteredOrders] = useState<any[]>(orders); // 필터된 주문 내역 상태
+  const fetchOrders = async () => {
+    try {
+      const memberRes = await apiFetch('/api/v1/members/me');
+      const memberId = memberRes.data?.id;
+
+      if(!memberId) throw new Error("잘못된 사용자 정보입니다.");
+
+      const orderRes = await apiFetch('/api/v1/orders/my');
+      const data = orderRes.data || [];
+
+      console.log(data);
+
+      const formatted = data.map((order: Order) => ({
+        id: order.id,
+        address: order.address,
+        order_status: order.order_status,
+        totalPrice: order.totalPrice,
+        orderItems: order.orderItems.map((item: OrderItem) => ({
+          id: item.id,
+          productName: item.productName,
+          productImage: item.productImage,
+          productPrice: item.productPrice,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice
+        }))
+      }));
+
+      console.log(formatted);
+
+      setOrders(formatted);
+      setFilteredOrders(formatted);
+    } catch (err) {
+      console.error("주문 목록 불러오기 실패.");
+    }
+  }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   const handleSearch = () => {
-    // 검색어를 소문자로 변환하여 주문 내역에서 검색
+    const query = searchQuery.toLowerCase();
     const filtered = orders.filter(order =>
-      order.productName.toLowerCase().includes(searchQuery.toLowerCase())
+      order.orderItems.some(item =>
+        item.productName.toLowerCase().includes(query)
+      )
     );
     setFilteredOrders(filtered);
   };
 
   return (
     <div className="p-6">
-      {/* 주문목록 검색 */}
-      <div className="flex items-center mb-4">
+      {/* 검색창 */}
+      <div className="flex items-center mb-6">
         <input
           type="text"
           placeholder="주문한 상품을 검색할 수 있어요!"
           value={searchQuery}
           onChange={handleSearchChange}
-          className="px-4 py-2 border rounded"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           onClick={handleSearch}
-          className="ml-2 px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+          className="ml-3 px-5 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
         >
           검색
         </button>
       </div>
 
       {/* 주문 목록 */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {filteredOrders.length === 0 ? (
-          <p>검색된 주문이 없습니다.</p> // 검색된 결과가 없으면 표시
+          <p className="text-gray-500">검색된 주문이 없습니다.</p>
         ) : (
-          filteredOrders.map((order) => (
-            <div key={order.id} className="flex justify-between border-b pb-4">
-              <div className="flex gap-4">
-                {/* 상품 이미지 */}
-                <img
-                  src={order.productImage} // 상품 이미지 경로
-                  alt={order.productName}
-                  className="w-16 h-16 object-cover"
-                />
-                <div>
-                  <h2 className="font-semibold">{order.productName}</h2>
-                  <p>주문 상태: {order.status}</p>
-                  <p>배송 상태: {order.deliveryStatus}</p>
-                  <p>총 금액: {order.totalPrice} 원</p>
-                </div>
-              </div>
+          filteredOrders.map(order => (
+            <div
+              key={order.id}
+              className="border-b pb-4"
+            >
+              <p className="font-bold mb-2">배송지: {order.address}</p>
+              <p className="font-bold 0 mb-4">주문 상태: {" "}
+                  {order.order_status === "ORDERED"
+                  ? "상품 준비중"
+                  : order.order_status === "DELIVERED"
+                  ? "상품 배송중"
+                  : order.order_status}
+              </p>
 
-              {/* 버튼들 */}
-              <div className="flex flex-col items-end space-y-2">
-                <button
-                  className="w-full text-sm bg-blue-600 text-white py-1 px-4 rounded hover:bg-blue-700"
+              {order.orderItems.map(item => (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center mb-4"
                 >
-                  배송조회: {order.deliveryDate} {/* 배송 조회 */}
-                </button>
-                <button
-                  className="w-full text-sm bg-gray-500 text-white py-1 px-4 rounded hover:bg-gray-600"
-                >
-                  교환/반품 신청
-                </button>
-                <button
-                  className="w-full text-sm bg-green-600 text-white py-1 px-4 rounded hover:bg-green-700"
-                >
-                  리뷰 작성하기
-                </button>
+                  <div className="flex gap-4 items-center">
+                    <img
+                      src={item.productImage}
+                      alt={item.productName}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div>
+                      <h3 className="font-semibold">{item.productName}</h3>
+                      <p className="text-sm text-gray-600">수량: {item.quantity}</p>
+                      <p className="text-sm text-gray-600">가격: {item.totalPrice.toLocaleString()}원</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="text-right text-md font-bold">
+                총 주문 금액: {order.totalPrice.toLocaleString()}원
               </div>
             </div>
           ))
