@@ -75,8 +75,16 @@ export default function Checkout({ totalPrice, onClose, clearCart }: CheckoutPro
       clearCart();
       router.refresh();
       
-      } catch (error) {
-        console.error('장바구니 비우기 실패', error);
+      } catch (error: any) {
+        switch (error.resultCode) {
+          case "400-6":
+            toast.error(error.msg);
+            onClose();
+            break;
+          default:
+            console.error('장바구니 비우기 실패', error);
+            break;
+        }
       }
     }
 
