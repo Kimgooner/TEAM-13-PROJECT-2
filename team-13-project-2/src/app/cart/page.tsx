@@ -99,7 +99,11 @@ export default function CartPage() {
           onClose={() => setIsCheckoutOpen(false)}
           cartItems={cartItems}
         >
-          <Checkout totalPrice={total} />
+          <Checkout 
+          totalPrice={total}
+          onClose={() => setIsCheckoutOpen(false)}
+          clearCart={clearCart}
+          />
         </Modal>
       )}
     </div>
