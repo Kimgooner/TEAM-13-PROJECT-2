@@ -1,12 +1,23 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/app/lib/backend/client';
 import ProductFormModal from '@/components/ProductFormModal';
 
+type User = {
+    id: number;
+    username: string;
+    role: string;
+  };
+
 export default function AdminProductPage() {
     const [products, setProducts] = useState<any[]>([]);
     const [editingProduct, setEditingProduct] = useState<any | null>(null);
+
+    const [user, setUser] = useState<User | null>(null);
+    const [accessDenied, setAccessDenied] = useState(false);
+    const router = useRouter();
 
     const fetchProducts = async () => {
         try {
@@ -16,6 +27,26 @@ export default function AdminProductPage() {
             console.error('상품 목록 조회 실패:', err);
         }
     };
+
+    // 사용자 정보 요청.
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const res = await apiFetch('/api/v1/members/me');
+            if (res.data?.role !== 'ADMIN') {
+              setAccessDenied(true);
+              setTimeout(() => router.push('/'), 5000); // 5초 후 홈으로 이동
+            } else {
+              setUser(res.data);
+            }
+          } catch (err) {
+            setAccessDenied(true);
+            setTimeout(() => router.push('/'), 5000);
+          }
+        };
+    
+        fetchUser();
+      }, [router]);
 
     useEffect(() => {
         fetchProducts();
@@ -29,6 +60,16 @@ export default function AdminProductPage() {
             console.error('삭제 실패:', err);
         }
     };
+
+    if (accessDenied) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen text-center">
+            <h1 className="text-3xl font-bold mb-4">⚠️ 접근 제한 ⚠️</h1>
+            <p className="text-lg">관리자만 접근 가능한 페이지입니다.</p>
+            <p className="text-sm text-gray-500 mt-2">5초 후 홈으로 이동합니다...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6">
